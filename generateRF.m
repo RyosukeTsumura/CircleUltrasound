@@ -1,4 +1,4 @@
-function [prebeam,t] = generateRF(x,y)
+function [prebeam,t] = generateRF(x,y,z)
 
 field_init(0);
 
@@ -34,7 +34,7 @@ receive_aperture = xdc_linear_array(N_elements_r, width_r, element_height, kerf_
 % Set the impulse response for the receive aperture
 xdc_impulse(receive_aperture, impulse_response);
 %  Define the point phantom
-phantom_positions = [x y 30] / 1000; % letaral elevation axial [m] 
+phantom_positions = [x y z] / 1000; % letaral elevation axial [m] 
 % phantom_positions = [0 0 20;0 0 30; 0 0 40; 0 0 50] / 1000; %  The position of the phantom
 [m n] = size(phantom_positions);
 phantom_amplitudes = 20*ones(m,1);      %  The amplitude of the back-scatter

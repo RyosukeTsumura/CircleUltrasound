@@ -1,24 +1,17 @@
 
-function out = DAS_ultrasound_circle(pre_bf, no_ele, Fs, channelSpacing, speedSound, xCoor, yCoor)
-
-% load('pre_bfrf.mat')
-% load('Corr.mat')
-% soundSpeed = 1540;
-% % no_ele = 3; %total number of elements
-% channelSpacing = 0.2;%60/128;
-% Fs = 40e6; %sample frequency
-% sampleSpacing = (1/Fs)*soundSpeed*1e3/2; %sample number vs mm
+function out = DAS_ultrasound_circle(pre_bf, radius, Fs, channelSpacing, speedSound, xCoor, yCoor, phantom_pos, cut_angle)
 
 %%
 
 ns = size(pre_bf,1);   % number of samples
-nl = 30/0.3;   % number of lines
+nl = 2*radius/channelSpacing;   % number of lines
 
 sampleSpacing = (1/Fs*speedSound)*1000/2; % spacing between samples in photoacoustic imaging
 
 postBF = zeros(ns,nl);
-xCoor2 = xCoor+15;
 
+xCoor2 = xCoor + phantom_pos(1) + radius; %modified coordinate
+yCoor2 = yCoor + phantom_pos(2);
 % hlfapt = round(no_ele/2);
 RF = pre_bf;
 % win = hamming(round(hlfapt)*2+1)';
@@ -27,9 +20,9 @@ for r = 1:nl % final line
         %           for i = r-hlfapt:r+hlfapt
         for i = 1:length(xCoor2)
             
-            width = r*0.3 - xCoor2(i);
+            width = (radius - (radius - r*channelSpacing)*cos(cut_angle)) - xCoor2(i);
             depth = j*(sampleSpacing*1);
-            elevation = yCoor(i);
+            elevation = (radius-r*channelSpacing)*sin(cut_angle) - yCoor2(i);
             distance = sqrt(width^2 + depth^2 + elevation^2);
             delay = distance/sampleSpacing;
                 if delay < ns
