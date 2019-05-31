@@ -1,5 +1,5 @@
 
-function out = DAS_ultrasound_circle(pre_bf, radius, Fs, channelSpacing, speedSound, xCoor, yCoor, phantom_pos, cut_angle)
+function out = DAS_ultrasound_circle(pre_bf, radius, Fs, channelSpacing, speedSound, xCoor, yCoor, phantom_pos, cut_angle_roll, cut_angle_yaw)
 
 %%
 
@@ -20,11 +20,14 @@ for r = 1:nl % final line
         %           for i = r-hlfapt:r+hlfapt
         for i = 1:length(xCoor2)
             
-            width = (radius - (radius - r*channelSpacing)*cos(cut_angle)) - xCoor2(i);
-            depth = j*(sampleSpacing*1);
-            elevation = (radius-r*channelSpacing)*sin(cut_angle) - yCoor2(i);
+            width = (radius - (radius - r*channelSpacing)*cos(cut_angle_roll)) + r*channelSpacing*sin(cut_angle_roll)*sin(cut_angle_yaw) - xCoor2(i);
+            depth = j*(sampleSpacing*1)*cos(cut_angle_yaw);
+            elevation = (radius-r*channelSpacing)*sin(cut_angle_roll) + r*channelSpacing*cos(cut_angle_roll)*sin(cut_angle_yaw) - yCoor2(i);
             distance = sqrt(width^2 + depth^2 + elevation^2);
             delay = distance/sampleSpacing;
+            value = j+delay;
+            f_value = floor(value);
+            c_value = ceil(value);
                 if delay < ns
                     y = RF(round(delay),i);
                     postBF(j,r) = postBF(j,r) + y;
