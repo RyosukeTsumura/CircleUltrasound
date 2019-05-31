@@ -7,9 +7,9 @@ fs = 40e6; %sample frequency
 sampleSpacing = (1/fs)*soundSpeed*1e3; %sample number vs mm
 times = 1;
 radius = 15; %radius of circular path;
-phantom_pos = [7,0,7*sqrt(3)]; %set phantom position(x,y,z)
-cut_angle_roll = pi/2; % reconstruction cut angle
-cut_angle_yaw = pi/6; % reconstruction cut angle
+phantom_pos = [0,7,7*sqrt(3)]; %set phantom position(x,y,z)
+cut_angle_roll = pi/6; % reconstruction cut angle
+cut_angle_yaw = pi/4; % reconstruction cut angle
 
 
 Coor = CircleCoor(0.02, radius, phantom_pos(1), phantom_pos(2));
@@ -43,9 +43,10 @@ x = [1 size(out,2)]*channelSpacing;
 % x = [1 size(out,2)]*0.5/times-size(out)*0.5/times/2;
 % y = [st size(postBF_F,1)]*sampleSpacing;
 y = [st ed]*sampleSpacing/2;
-env = env/max(max(env(st:ed,:)));
+env2 = env/max(max(env(st:ed,:)));
 figure
-imagesc(x,y,db(env(st:ed,:)),[-40 0]);
+% imagesc(x,y,db(env2(st:ed,:)),[-40 0]);
+imagesc(x,y,(env(st:ed,:)));
 % imagesc(abs(env(3000:end-500,:)));
 colormap(gray)
 axis image
